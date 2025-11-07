@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌍 Time Zone Converter</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 350px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    button {
+      background-color: #4e9af1;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    #resultBox {
+      display: none;
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 10px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .success {
+      color: #00ffb3;
+    }
+
+    .error {
+      color: #ff6666;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌍 Time Zone Converter</h2>
+
+    <input type="datetime-local" id="time">
+
+    <select id="fromZone">
+      <option value="">-- Select From Timezone --</option>
+      <option value="Asia/Kolkata">🇮🇳 Asia/Kolkata (Mumbai)</option>
+      <option value="America/New_York">🇺🇸 America/New_York (New York)</option>
+      <option value="Europe/London">🇬🇧 Europe/London (London)</option>
+      <option value="Asia/Dubai">🇦🇪 Asia/Dubai (Dubai)</option>
+      <option value="Asia/Tokyo">🇯🇵 Asia/Tokyo (Tokyo)</option>
+      <option value="Australia/Sydney">🇦🇺 Australia/Sydney</option>
+    </select>
+
+    <select id="toZone">
+      <option value="">-- Select To Timezone --</option>
+      <option value="Asia/Kolkata">🇮🇳 Asia/Kolkata (Mumbai)</option>
+      <option value="America/New_York">🇺🇸 America/New_York (New York)</option>
+      <option value="Europe/London">🇬🇧 Europe/London (London)</option>
+      <option value="Asia/Dubai">🇦🇪 Asia/Dubai (Dubai)</option>
+      <option value="Asia/Tokyo">🇯🇵 Asia/Tokyo (Tokyo)</option>
+      <option value="Australia/Sydney">🇦🇺 Australia/Sydney</option>
+    </select>
+
+    <button onclick="convertTime()">Convert</button>
+
+    <div id="resultBox">
+      <h3 id="result"></h3>
+    </div>
+  </div>
+
+  <script>
+    async function convertTime() {
+      const timeInput = document.getElementById('time');
+      const time = timeInput.value ? timeInput.value : new Date().toISOString().slice(0,16);
+      const fromZone = document.getElementById('fromZone').value;
+      const toZone = document.getElementById('toZone').value;
+      const resultBox = document.getElementById('resultBox');
+      const resultText = document.getElementById('result');
+
+      if (!fromZone || !toZone) {
+        resultBox.style.display = 'block';
+        resultText.innerText = "⚠️ Please select both timezones!";
+        resultText.className = "error";
+        return;
+      }
+
+      const res = await fetch('/convert', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ time, fromZone, toZone })
+      });
+
+      const data = await res.json();
+
+      resultBox.style.display = 'block';
+
+      if (data.success) {
+        resultText.innerHTML = `✅ <b>Converted Successfully!</b><br><br>🕒 ${data.convertedTime}`;
+        resultText.className = "success";
+      } else {
+        resultText.innerText = "❌ Invalid input, try again!";
+        resultText.className = "error";
+      }
+    }
+  </script>
+</body>
+</html>
