@@ -1,8 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:20-alpine' } // Node.js pre-installed
+    }
 
     stages {
-
         stage('Clone from GitHub') {
             steps {
                 git branch: 'main',
