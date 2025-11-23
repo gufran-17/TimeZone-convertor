@@ -15,15 +15,21 @@ pipeline {
             }
         }
 
-        stage('Run App for Testing') {
+        stage('Testing') {
             steps {
                 sh 'node index.js'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
                 sh 'docker build -t timezone-app .'
+            }
+        }
+
+        stage ('deploy'){
+            steps {
+                sh 'docker run -p 3000:3000 timezone-converter'
             }
         }
     }
