@@ -1,11 +1,6 @@
 pipeline {
     agent my-jenkins-learning
 
-    environment {
-        APP_NAME = "timezone-app"
-        PORT = "3000"
-    }
-
     stages {
         stage('Clone from GitHub') {
             steps {
@@ -22,35 +17,20 @@ pipeline {
 
         stage('Run App for Testing') {
             steps {
-                sh 'node index.js & sleep 5' // Run in background for test
+                sh 'node index.js'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t $APP_NAME ."
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                sh """
-                # Stop existing container if running
-                if [ \$(docker ps -q -f name=$APP_NAME) ]; then
-                    docker stop $APP_NAME
-                    docker rm $APP_NAME
-                fi
-
-                # Run container with port mapping
-                docker run -d -p $PORT:$PORT --name $APP_NAME $APP_NAME
-                """
+                sh 'docker build -t timezone-app .'
             }
         }
     }
 
     post {
         success {
-            echo "Pipeline executed successfully! App running on port $PORT"
+            echo "Pipeline executed successfully!"
         }
         failure {
             echo "Pipeline failed!"
