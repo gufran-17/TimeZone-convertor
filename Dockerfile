@@ -5,7 +5,8 @@ WORKDIR /app
 
 #copy dependencies
 
-COPY package*.json  .
+COPY package*.json /app/
+
 
 #install dependencies
 
