@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: timezone-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timezone
+  template:
+    metadata:
+      labels:
+        app: timezone
+
+    spec:
+      containers:
+        - name: timezone-container
+          image: gufran2003/timezone-conveter:latest
+          ports:
+            - containerPort: 3000
