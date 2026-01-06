@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'my-jenkins-learning' }
+    agent any
 
     stages {
 
